@@ -5,10 +5,8 @@ const cors = require('cors');
 const app = express();
 const port = process.env.PORT || 8081;
 
-app.use(express.static(__dirname + '/dist'));
-app.get('/', (req, res) => res.sendFile(__dirname + 'dist/index.html'));
 app.use(bodyParser.json());
-app.use(cors({ origin: 'http://localhost:8080' }));
+app.use(cors({ origin: process.env.CLIENTURL || 'http://locahost:8080' }));
 app.use(require('./middleware/auth.js'));
 app.use('/api', require('./routes'));
 

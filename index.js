@@ -1,3 +1,4 @@
+const history = require('connect-history-api-fallback');
 const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
 const express = require('express');
@@ -6,6 +7,7 @@ const cors = require('cors');
 const app = express();
 const port = process.env.PORT || 8081;
 
+app.use(history());
 app.use(express.static(path.join(__dirname, '../client/dist')));
 app.use(bodyParser.json());
 app.use(cors({ origin: process.env.NODE_ENV === 'production' ? process.env.CLIENTURL : 'http://localhost:8080' }));	

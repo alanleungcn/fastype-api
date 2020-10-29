@@ -7,13 +7,30 @@ const cors = require('cors');
 const app = express();
 const port = process.env.PORT || 8081;
 
-app.use(history());
+app.use(
+	history({
+		rewrites: [
+			{
+				from: /^\/api/,
+				to: function (context) {
+					return context.parsedUrl.path;
+				}
+			}
+		]
+	})
+);
 app.use(express.static(path.join(__dirname, '../client/dist')));
 app.use(bodyParser.json());
-app.use(cors({ origin: process.env.NODE_ENV === 'production' ? process.env.CLIENTURL : 'http://localhost:8080' }));	
+app.use(
+	cors({
+		origin:
+			process.env.NODE_ENV === 'production'
+				? process.env.CLIENTURL
+				: 'http://localhost:8080'
+	})
+);
 app.use('/api', require('./middleware/auth.js'));
 app.use('/api', require('./routes'));
-
 
 mongoose.connect(process.env.DBURL, {
 	useNewUrlParser: true,

@@ -7,15 +7,9 @@ const app = express();
 const port = process.env.PORT || 8081;
 
 app.use(express.static(path.join(__dirname, '../client/dist')));
-
-app.use((req, res, next) => {
-	if (req.path.split('/')[1] === 'api') next()
-	else res.redirect('/')
-})
-
 app.use(bodyParser.json());
 app.use(cors({ origin: process.env.NODE_ENV === 'production' ? process.env.CLIENTURL : 'http://localhost:8080' }));	
-app.use(require('./middleware/auth.js'));
+app.use('/api', require('./middleware/auth.js'));
 app.use('/api', require('./routes'));
 
 

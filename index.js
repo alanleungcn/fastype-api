@@ -12,10 +12,6 @@ app.use(cors({ origin: process.env.CLIENTURL || 'http://localhost:8080' }));
 app.use(require('./middleware/auth.js'));
 app.use('/api', require('./routes'));
 
-app.get('/*', (req, res) => {
-	res.redirect('/');
-});
-
 mongoose.connect(process.env.DBURL, {
 	useNewUrlParser: true,
 	useUnifiedTopology: true

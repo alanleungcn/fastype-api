@@ -78,7 +78,7 @@ router.post('/record', validateRecord, async (req, res) => {
 		lastTenAvgWpm: lastTenAvgWpm
 	};
 	await user.updateOne({ email: req.body.email }, { $set: { stat: stat } });
-	res.sendStatus(200);
+	res.json({ bestWpm: bestWpm.wpm });
 });
 
 router.get('/record', async (req, res) => {

@@ -1,13 +1,8 @@
 const express = require('express');
 const router = express.Router();
 const user = require('../../model/user.js');
-let cache = {
-	data: null,
-	time: null
-};
 
 router.get('/leaderboard', async (req, res) => {
-	if (cache.time > Date.now() - 60 * 1000) return res.json(cache.data);
 	const stat = await user.find({}, ['email', 'name', 'stat']);
 	const bestWpmArr = stat.map((e) => {
 		return {
@@ -48,7 +43,7 @@ router.get('/leaderboard', async (req, res) => {
 	bestDailyWpm.forEach((e, i) => {
 		e.rank = i + 1;
 	});
-	cache.data = {
+	res.json({
 		bestWpm: {
 			list: bestWpm,
 			rank: bestWpmRank
@@ -57,9 +52,7 @@ router.get('/leaderboard', async (req, res) => {
 			list: bestDailyWpm,
 			rank: bestDailyWpmRank
 		}
-	};
-	cache.time = Date.now();
-	res.json(cache.data);
+	});
 });
 
 module.exports = router;

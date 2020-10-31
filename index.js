@@ -5,13 +5,10 @@ const express = require('express');
 const path = require('path');
 const cors = require('cors');
 const app = express();
-const port = process.env.PORT || 8081;
-/* const http = require('http').Server(app);
-const io = require('socket.io')(http); */
+const http = require('http').Server(app);
+const io = require('socket.io')(http);
+require('./socket/index')(io);
 
-/* io.on('connection', () => {
-	console.log(123)
-}) */
 app.use(
 	history({
 		rewrites: [
@@ -43,4 +40,4 @@ mongoose.connect(process.env.DBURL, {
 });
 mongoose.set('useFindAndModify', false);
 
-app.listen(port);
+http.listen(process.env.PORT || 8081);

@@ -12,6 +12,5 @@ module.exports = async (socket, next) => {
 			socket.disconnect();
 		});
 	const payload = ticket.getPayload();
-	console.log(payload.email);
 	next();
 };

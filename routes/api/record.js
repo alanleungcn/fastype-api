@@ -84,7 +84,9 @@ router.post('/record', validateRecord, async (req, res) => {
 router.get('/record', async (req, res) => {
 	const profile = await user.findOne({ email: req.body.email });
 	const record = profile.record;
-	const start = new Date();
+	const UTCTime = new Date();
+	const HKTime = UTCTime - UTCTime.getTimezoneOffset() + 1000 * 60 * 60 * 8;
+	const start = new Date(HKTime);
 	start.setHours(0, 0, 0, 0);
 	const date = start.getTime() - 1000 * 60 * 60 * 24 * 7;
 	const pastSevenDay = record.filter((e) => e.date > date);

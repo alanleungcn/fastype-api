@@ -86,13 +86,13 @@ router.get('/record', async (req, res) => {
 	const record = profile.record;
 	const start = new Date();
 	start.setHours(0, 0, 0, 0);
-	const date = start - 1000 * 60 * 60 * 24 * 7;
+	const date = start.getTime() - 1000 * 60 * 60 * 24 * 7;
 	const pastSevenDay = record.filter((e) => e.date > date);
 	let progression = [];
 	pastSevenDay.reduce((a, e) => {
 		const recordDate = new Date(e.date);
 		recordDate.setHours(0, 0, 0, 0);
-		const diff = (recordDate - date) / (1000 * 60 * 60 * 24) - 1;
+		const diff = (recordDate.getTime() - date) / (1000 * 60 * 60 * 24) - 1;
 		if (!progression[diff]) progression[diff] = [];
 		progression[diff].push(e.wpm);
 		return progression;

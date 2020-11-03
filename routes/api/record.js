@@ -92,7 +92,9 @@ router.get('/record', async (req, res) => {
 	const pastSevenDay = record.filter((e) => e.date > date);
 	let progression = [];
 	pastSevenDay.reduce((a, e) => {
-		const recordDate = new Date(e.date);
+		const recordHKTime =
+			e.date - UTCTime.getTimezoneOffset() + 1000 * 60 * 60 * 8;
+		const recordDate = new Date(recordHKTime);
 		recordDate.setHours(0, 0, 0, 0);
 		const diff = (recordDate.getTime() - date) / (1000 * 60 * 60 * 24) - 1;
 		if (!progression[diff]) progression[diff] = [];

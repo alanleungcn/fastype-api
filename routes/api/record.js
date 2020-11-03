@@ -84,11 +84,15 @@ router.post('/record', validateRecord, async (req, res) => {
 router.get('/record', async (req, res) => {
 	const profile = await user.findOne({ email: req.body.email });
 	const record = profile.record;
-	const date = Date.now() - 1000 * 60 * 60 * 24 * 7;
+	const start = new Date();
+	start.setHours(0, 0, 0, 0);
+	const date = start - 1000 * 60 * 60 * 24 * 7;
 	const pastSevenDay = record.filter((e) => e.date > date);
 	let progression = [];
 	pastSevenDay.reduce((a, e) => {
-		const diff = Math.round((e.date - date) / (1000 * 60 * 60 * 24) - 1);
+		const recordDate = new Date(e.date);
+		recordDate.setHours(0, 0, 0, 0);
+		const diff = (recordDate - date) / (1000 * 60 * 60 * 24) - 1;
 		if (!progression[diff]) progression[diff] = [];
 		progression[diff].push(e.wpm);
 		return progression;

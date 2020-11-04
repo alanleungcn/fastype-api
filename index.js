@@ -5,9 +5,9 @@ const express = require('express');
 const path = require('path');
 const cors = require('cors');
 const app = express();
-/* const http = require('http').Server(app);
+const http = require('http').Server(app);
 const io = require('socket.io')(http);
-require('./socket/index')(io); */
+require('./socket/index')(io);
 
 app.use(
 	history({
@@ -40,4 +40,4 @@ mongoose.connect(process.env.DBURL, {
 });
 mongoose.set('useFindAndModify', false);
 
-app.listen(process.env.PORT || 8081);
+http.listen(process.env.PORT || 8081);

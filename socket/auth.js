@@ -1,16 +1,24 @@
 const { OAuth2Client } = require('google-auth-library');
 const googleClient = new OAuth2Client(process.env.CLIENTID);
+const user = require('../model/user.js');
 
-module.exports = async (socket, next) => {
-	if (!socket.handshake.query.token) return socket.disconnect();
-	const ticket = await googleClient
-		.verifyIdToken({
-			idToken: socket.handshake.query.token,
+module.exports = async (token) => {
+	try {
+		const ticket = await googleClient.verifyIdToken({
+			idToken: token,
 			audience: process.env.CLIENTID
-		})
-		.catch((err) => {
-			socket.disconnect();
 		});
-	const payload = ticket.getPayload();
-	next();
+		const payload = ticket.getPayload();
+		const email = payload.email;
+		const name = await user.find({ email: email }).select('name -_id');
+		return {
+			success: true,
+			name: name[0].name,
+			email: email
+		};
+	} catch (err) {
+		return {
+			success: false
+		};
+	}
 };

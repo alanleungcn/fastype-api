@@ -1,8 +1,9 @@
-const auth = require('./auth.js');
+const handler = require('./handler');
 
 module.exports = (io) => {
-	io.use(auth);
 	io.on('connection', (socket) => {
-		console.log(socket);
+		socket.on('joinPublic', (data) => {
+			handler.joinPublic(socket, data.token);
+		});
 	});
 };

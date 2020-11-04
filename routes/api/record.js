@@ -83,30 +83,6 @@ router.post('/record', validateRecord, async (req, res) => {
 
 router.get('/record', async (req, res) => {
 	const profile = await user.findOne({ email: req.body.email });
-	const record = profile.record;
-	const UTCTime = new Date();
-	const HKTime = UTCTime - UTCTime.getTimezoneOffset() + 1000 * 60 * 60 * 8;
-	const start = new Date(HKTime);
-	start.setHours(0, 0, 0, 0);
-	const date = start.getTime() - 1000 * 60 * 60 * 24 * 7;
-	const pastSevenDay = record.filter((e) => e.date > date);
-	let progression = [];
-	pastSevenDay.reduce((a, e) => {
-		const recordHKTime =
-			e.date - UTCTime.getTimezoneOffset() + 1000 * 60 * 60 * 8;
-		const recordDate = new Date(recordHKTime);
-		recordDate.setHours(0, 0, 0, 0);
-		const diff = (recordDate.getTime() - date) / (1000 * 60 * 60 * 24) - 1;
-		if (!progression[diff]) progression[diff] = [];
-		progression[diff].push(e.wpm);
-		return progression;
-	}, {});
-	for (let i = 0; i < 7; i++) {
-		if (!progression[i]) progression[i] = [0];
-	}
-	progression.forEach((e, i) => {
-		progression[i] = Math.round(e.reduce((a, b) => a + b) / e.length);
-	});
 	res.json({
 		stat: {
 			avgAcc: profile.stat.avgAcc,
@@ -115,8 +91,7 @@ router.get('/record', async (req, res) => {
 			totalRace: profile.stat.totalRace,
 			lastTenAvgWpm: profile.stat.lastTenAvgWpm
 		},
-		record: record,
-		progression: progression
+		record: profile.record
 	});
 });
 

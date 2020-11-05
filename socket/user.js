@@ -1,25 +1,42 @@
+const quote = require('../assets/quote');
 const users = [];
-const rooms = [{ id: '123', players: [1, 2, 3, 4, 5] } ];
+const rooms = [];
 
-function join(userData, room) {
-  const user = users.find((e) => e.email === userData.email);
-  if (user) return
+function initUser(email, name, id) {
 	users.push({
-		email: userData.email,
-		name: userData.name,
-		room: room
+		email: email,
+		name: name,
+		id: id
 	});
-  const roomIdx = rooms.findIndex((e) => e.id === room);
-	rooms[roomIdx].players.push({
-		email: userData.email,
-		name: userData.name
-	});
-	console.log(users, rooms);
 }
 
-function avaliableRoom() {
-  const freeRoom = rooms.find((e) => e.players.length < 5);
-	if (rooms.length === 0 || !freeRoom) {
+function joinPublic(id, roomId) {
+	const userIdx = users.findIndex((e) => e.id === id);
+	if (users[userIdx].room) return
+	const roomIdx = rooms.findIndex((e) => e.id === roomId);
+	rooms[roomIdx].players.push({
+		email: users[userIdx].email,
+		name: users[userIdx].name
+	});
+	users[userIdx].room = roomId;
+	return rooms[roomIdx]
+}
+
+function userDisconnect(id) {
+	console.log(id);
+	const idx = users.findIndex((e) => e.id === id);
+	users.splice(idx, 1);
+}
+
+function userExist(email) {
+	const idx = users.findIndex((e) => e.email === email);
+	if (idx === -1) return false;
+	return true;
+}
+
+function availPublic() {
+	const freeRoom = rooms.find((e) => e.players.length < 5);
+	if (!freeRoom) {
 		const roomId =
 			Date.now() +
 			Math.round(Math.random() * 1000)
@@ -33,14 +50,20 @@ function avaliableRoom() {
 }
 
 function createRoom(roomId) {
+	let text = [];
+	const word = quote[Math.floor(Math.random() * quote.length)].split(' ');
+	word.forEach((e) => text.push(e));
 	rooms.push({
 		id: roomId,
+		text: text,
 		players: []
 	});
 }
 
 module.exports = {
-	join,
-	avaliableRoom,
-	createRoom
+	initUser,
+	userExist,
+	userDisconnect,
+	availPublic,
+	joinPublic
 };

@@ -12,14 +12,14 @@ function initUser(email, name, id) {
 
 function joinPublic(id, roomId) {
 	const userIdx = users.findIndex((e) => e.id === id);
-	if (users[userIdx].room) return
+	if (users[userIdx].room) return;
 	const roomIdx = rooms.findIndex((e) => e.id === roomId);
 	rooms[roomIdx].players.push({
 		email: users[userIdx].email,
 		name: users[userIdx].name
 	});
 	users[userIdx].room = roomId;
-	return rooms[roomIdx]
+	return rooms[roomIdx];
 }
 
 function userDisconnect(id) {

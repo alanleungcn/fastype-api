@@ -5,8 +5,15 @@ const express = require('express');
 const path = require('path');
 const cors = require('cors');
 const app = express();
-const http = require('http').Server(app);
-const io = require('socket.io')(http);
+const http = require('http').createServer(app);
+const io = require('socket.io')(http, {
+	cors: {
+		origin:
+			process.env.NODE_ENV === 'production'
+				? process.env.CLIENTURL
+				: 'http://localhost:8080'
+	}
+});
 require('./socket/index')(io);
 
 app.use(

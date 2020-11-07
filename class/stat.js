@@ -62,16 +62,16 @@ module.exports = class Stat {
 				.reduce((a, b) => a + b) / record.slice(-10).length
 		);
 		if (this.lastTenAvgWpm > 0 && this.lastTenAvgWpm < 10) this.level = 1;
-		if (this.lastTenAvgWpm > 10 && this.lastTenAvgWpm < 20) this.level = 2;
-		if (this.lastTenAvgWpm > 20 && this.lastTenAvgWpm < 30) this.level = 3;
-		if (this.lastTenAvgWpm > 30 && this.lastTenAvgWpm < 40) this.level = 4;
-		if (this.lastTenAvgWpm > 40 && this.lastTenAvgWpm < 50) this.level = 5;
-		if (this.lastTenAvgWpm > 50 && this.lastTenAvgWpm < 60) this.level = 6;
-		if (this.lastTenAvgWpm > 60 && this.lastTenAvgWpm < 70) this.level = 7;
-		if (this.lastTenAvgWpm > 70 && this.lastTenAvgWpm < 80) this.level = 8;
-		if (this.lastTenAvgWpm > 80 && this.lastTenAvgWpm < 90) this.level = 9;
-		if (this.lastTenAvgWpm > 90 && this.lastTenAvgWpm < 100) this.level = 10;
-		if (this.lastTenAvgWpm > 100 && this.lastTenAvgWpm < 110) this.level = 11;
+		if (this.lastTenAvgWpm >= 10 && this.lastTenAvgWpm < 20) this.level = 2;
+		if (this.lastTenAvgWpm >= 20 && this.lastTenAvgWpm < 30) this.level = 3;
+		if (this.lastTenAvgWpm >= 30 && this.lastTenAvgWpm < 40) this.level = 4;
+		if (this.lastTenAvgWpm >= 40 && this.lastTenAvgWpm < 50) this.level = 5;
+		if (this.lastTenAvgWpm >= 50 && this.lastTenAvgWpm < 60) this.level = 6;
+		if (this.lastTenAvgWpm >= 60 && this.lastTenAvgWpm < 70) this.level = 7;
+		if (this.lastTenAvgWpm >= 70 && this.lastTenAvgWpm < 80) this.level = 8;
+		if (this.lastTenAvgWpm >= 80 && this.lastTenAvgWpm < 90) this.level = 9;
+		if (this.lastTenAvgWpm >= 90 && this.lastTenAvgWpm < 100) this.level = 10;
+		if (this.lastTenAvgWpm >= 100 && this.lastTenAvgWpm < 110) this.level = 11;
 		if (this.lastTenAvgWpm > 110) this.level = 12;
 	}
 };

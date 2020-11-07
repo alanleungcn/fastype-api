@@ -26,11 +26,17 @@ const userSchema = new mongoose.Schema({
 			avgWpm: 0,
 			bestWpm: {
 				wpm: 0,
-				date: 0
+				acc: 0,
+				time: null,
+				mode: null,
+				date: null
 			},
 			bestDailyWpm: {
 				wpm: 0,
-				date: 0
+				acc: 0,
+				time: null,
+				mode: null,
+				date: null
 			},
 			totalRace: 0,
 			lastTenAvgWpm: 0

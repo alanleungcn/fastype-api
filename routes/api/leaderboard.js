@@ -4,7 +4,6 @@ const user = require('../../model/user.js');
 
 router.get('/leaderboard', async (req, res) => {
 	const users = await user.find({}, ['email', 'name', 'stat']);
-	console.log(users);
 	const leaderboard = new Leaderboard(users);
 	res.json({
 		bestWpm: {

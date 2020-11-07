@@ -19,9 +19,8 @@ router.post('/record', validateRecord, async (req, res) => {
 
 router.get('/record', async (req, res) => {
 	const profile = await user.findOne({ email: req.body.email });
-	const stat = new Stat(profile.record);
 	res.json({
-		stat: stat,
+		stat: profile.stat,
 		record: profile.record
 	});
 });

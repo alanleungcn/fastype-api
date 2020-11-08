@@ -39,7 +39,9 @@ const userSchema = new mongoose.Schema({
 				date: null
 			},
 			totalRace: 0,
-			lastTenAvgWpm: 0
+			totalTime: 0,
+			lastTenAvgWpm: 0,
+			level: 1
 		}
 	}
 });

@@ -18,6 +18,15 @@ router.post('/record', validateRecord, async (req, res) => {
 });
 
 router.get('/record', async (req, res) => {
+	if (req.query.email || req.query.name) {
+		const query = await user.find(
+			{ $or: [{ email: req.query.email }, { name: req.query.name }] },
+			['name', 'stat']
+		);
+		if (query.length > 0)
+			return res.json({ name: query[0].name, stat: query[0].stat });
+		return res.json({ error: true });
+	}
 	const profile = await user.findOne({ email: req.body.email });
 	res.json({
 		stat: profile.stat,

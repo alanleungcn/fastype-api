@@ -26,25 +26,25 @@ module.exports = class Leaderboard {
 				mode: e.stat.bestDailyWpm.mode,
 				date: e.stat.bestDailyWpm.date
 			};
-    });
+		});
 		this.bestDailyWpm = bestDailyWpmList.filter((e) => {
 			const start = new Date();
 			start.setUTCHours(0, 0, 0, 0);
 			return e.date > start && e.wpm > 0;
-    });
-    this.bestDailyWpm.sort((a, b) => b.wpm - a.wpm);
-    this.bestDailyWpm.forEach((e, i) => {
+		});
+		this.bestDailyWpm.sort((a, b) => b.wpm - a.wpm);
+		this.bestDailyWpm.forEach((e, i) => {
 			e.rank = i + 1;
 		});
 	}
 	getRank(email) {
-    const user = this.bestWpm.find((e) => e.email === email);
-    if (user)	return user.rank;
-    else return 0
+		const user = this.bestWpm.find((e) => e.email === email);
+		if (user) return user.rank;
+		else return 0;
 	}
 	getDailyRank(email) {
-    const user = this.bestDailyWpm.find((e) => e.email === email);
-    if (user) return user.rank;
-    else return 0
+		const user = this.bestDailyWpm.find((e) => e.email === email);
+		if (user) return user.rank;
+		else return 0;
 	}
 };

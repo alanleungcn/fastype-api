@@ -72,6 +72,6 @@ module.exports = class Stat {
 		if (this.lastTenAvgWpm >= 80 && this.lastTenAvgWpm < 90) this.level = 9;
 		if (this.lastTenAvgWpm >= 90 && this.lastTenAvgWpm < 100) this.level = 10;
 		if (this.lastTenAvgWpm >= 100 && this.lastTenAvgWpm < 110) this.level = 11;
-		if (this.lastTenAvgWpm > 110) this.level = 12;
+		if (this.lastTenAvgWpm >= 110) this.level = 12;
 	}
 };

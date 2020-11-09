@@ -40,11 +40,11 @@ module.exports = class Leaderboard {
 	getRank(email) {
 		const user = this.bestWpm.find((e) => e.email === email);
 		if (user) return user.rank;
-		else return 0;
+		return 0;
 	}
 	getDailyRank(email) {
 		const user = this.bestDailyWpm.find((e) => e.email === email);
 		if (user) return user.rank;
-		else return 0;
+		return 0;
 	}
 };

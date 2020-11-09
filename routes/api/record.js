@@ -1,6 +1,6 @@
 const router = require('express').Router();
-const user = require('../../model/user.js');
 const Stat = require('../../class/stat');
+const user = require('../../model/user.js');
 const validateRecord = require('../../middleware/validator/record');
 
 router.post('/record', validateRecord, async (req, res) => {
@@ -14,7 +14,7 @@ router.post('/record', validateRecord, async (req, res) => {
 		{ email: req.body.email },
 		{ $set: { record: record, stat: stat } }
 	);
-	res.json({ bestWpm: stat.bestWpm.wpm });
+	res.json({ bestWpm: profile.stat.bestWpm.wpm });
 });
 
 router.get('/record', async (req, res) => {

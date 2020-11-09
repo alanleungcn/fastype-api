@@ -22,8 +22,12 @@ const userSchema = new mongoose.Schema({
 	stat: {
 		type: Object,
 		default: {
-			avgAcc: 0,
+			level: 1,
 			avgWpm: 0,
+			avgAcc: 0,
+			totalRace: 0,
+			totalTime: 0,
+			lastTenAvgWpm: 0,
 			bestWpm: {
 				wpm: 0,
 				acc: 0,
@@ -37,11 +41,7 @@ const userSchema = new mongoose.Schema({
 				time: null,
 				mode: null,
 				date: null
-			},
-			totalRace: 0,
-			totalTime: 0,
-			lastTenAvgWpm: 0,
-			level: 1
+			}
 		}
 	}
 });

@@ -1,9 +1,10 @@
 module.exports = class Stat {
 	constructor(record) {
 		if (record.length === 0) {
-			this.totalRace = 0;
 			this.avgWpm = 0;
 			this.avgAcc = 0;
+			this.totalRace = 0;
+			this.lastTenAvgWpm = 0;
 			this.bestWpm = {
 				wpm: 0,
 				acc: 0,
@@ -18,7 +19,6 @@ module.exports = class Stat {
 				mode: null,
 				date: null
 			};
-			this.lastTenAvgWpm = 0;
 			return;
 		}
 		const wpm = record.map((e) => e.wpm);
@@ -32,13 +32,12 @@ module.exports = class Stat {
 		const bestDailyWpmIdx = dailyRecord
 			.map((e) => e.wpm)
 			.indexOf(Math.max(...dailyRecord.map((e) => e.wpm)));
+		this.avgWpm = Math.round(wpm.reduce((a, b) => a + b) / wpm.length);
+		this.avgAcc = Math.round(acc.reduce((a, b) => a + b) / acc.length);
 		this.totalRace = record.length;
 		this.totalTime = Math.round(
 			record.map((e) => e.time).reduce((a, b) => a + b) / 60
 		);
-		this.avgWpm = Math.round(wpm.reduce((a, b) => a + b) / wpm.length);
-		this.avgAcc = Math.round(acc.reduce((a, b) => a + b) / acc.length);
-		if (bestWpmIdx < 0) return;
 		this.bestWpm = {
 			wpm: record[bestWpmIdx].wpm,
 			acc: record[bestWpmIdx].acc,

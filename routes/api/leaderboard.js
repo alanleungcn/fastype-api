@@ -1,6 +1,6 @@
 const router = require('express').Router();
-const Leaderboard = require('../../class/leaderboard');
 const user = require('../../model/user.js');
+const Leaderboard = require('../../class/leaderboard');
 
 router.get('/leaderboard', async (req, res) => {
 	const users = await user.find({}, ['email', 'name', 'stat']);

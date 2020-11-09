@@ -1,11 +1,9 @@
-const express = require('express');
-const router = express.Router();
+const router = require('express').Router();
 const user = require('../../model/user.js');
 
 router.get('/theme', async (req, res) => {
 	const profile = await user.findOne({ email: req.body.email });
-	const config = profile.config;
-	res.json({ theme: config.theme, custom: config.custom });
+	res.json({ theme: profile.config.theme, custom: profile.config.custom });
 });
 
 router.post('/theme', async (req, res) => {
@@ -23,7 +21,7 @@ router.post('/theme', async (req, res) => {
 			{ $set: { 'config.theme': 'custom', 'config.custom': req.body.custom } }
 		);
 		res.sendStatus(200);
-	}
+	} else res.sendStatus(400);
 });
 
 module.exports = router;

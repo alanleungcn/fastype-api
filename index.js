@@ -4,14 +4,14 @@ const mongoose = require('mongoose');
 const express = require('express');
 const path = require('path');
 const cors = require('cors');
+require('dotenv').config();
 const app = express();
+const port = process.env.PORT || 8081;
+const clientUrl = process.env.CLIENTURL || 'http://localhost:8080';
 const http = require('http').createServer(app);
 const io = require('socket.io')(http, {
 	cors: {
-		origin:
-			process.env.NODE_ENV === 'production'
-				? process.env.CLIENTURL
-				: 'http://localhost:8080'
+		origin: clientUrl
 	}
 });
 require('./socket/index')(io);
@@ -21,8 +21,8 @@ app.use(
 		rewrites: [
 			{
 				from: /^\/api/,
-				to: function (context) {
-					return context.parsedUrl.path;
+				to: (ctx) => {
+					return ctx.parsedUrl.path;
 				}
 			}
 		]
@@ -32,19 +32,14 @@ app.use(express.static(path.join(__dirname, '../client/dist')));
 app.use(bodyParser.json());
 app.use(
 	cors({
-		origin:
-			process.env.NODE_ENV === 'production'
-				? process.env.CLIENTURL
-				: 'http://localhost:8080'
+		origin: clientUrl
 	})
 );
-app.use('/api', require('./middleware/auth.js'));
 app.use('/api', require('./routes'));
 
 mongoose.connect(process.env.DBURL, {
 	useNewUrlParser: true,
 	useUnifiedTopology: true
 });
-mongoose.set('useFindAndModify', false);
 
-http.listen(process.env.PORT || 8081);
+http.listen(port);

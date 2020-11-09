@@ -6,10 +6,9 @@ module.exports = (req, res, next) => {
 		typeof record.time !== 'number' ||
 		typeof record.date !== 'number' ||
 		typeof record.mode !== 'string' ||
-		!Array.isArray(record.wpmPerSec)
-	) {
+		!Array.isArray(record.wpmPerSec) ||
+		!Array.isArray(record.rawWpmPerSec)
+	)
 		return res.sendStatus(400);
-	} else {
-		next();
-	}
+	next();
 };

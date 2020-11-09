@@ -1,33 +1,29 @@
-const express = require('express');
-const router = express.Router();
-require('dotenv').config();
+const router = require('express').Router();
+const user = require('../../model/user.js');
 const { OAuth2Client } = require('google-auth-library');
 const googleClient = new OAuth2Client(process.env.CLIENTID);
-const user = require('../../model/user.js');
 
 router.post('/signin', async (req, res) => {
-	const ticket = await googleClient
-		.verifyIdToken({
+	try {
+		const ticket = await googleClient.verifyIdToken({
 			idToken: req.headers.authorization,
 			audience: process.env.CLIENTID
-		})
-		.catch((err) => {
-			res.sendStatus(401);
 		});
-	if (!ticket) return;
-	const payload = ticket.getPayload();
-	const email = payload.email;
-	const name = payload.name;
-	/* const nameExist = await user.exists({ name: name }); */
-	const userExist = await user.exists({ email: email });
-	if (!userExist) {
-		const account = new user({
-			email: email,
-			name: name
-		});
-		await account.save();
+		const payload = ticket.getPayload();
+		const name = payload.name;
+		const email = payload.email;
+		const exist = await user.exists({ email: email });
+		if (!exist) {
+			const account = new user({
+				name: name,
+				email: email
+			});
+			await account.save();
+		}
+		res.sendStatus(200);
+	} catch (err) {
+		res.sendStatus(401);
 	}
-	res.sendStatus(200);
 });
 
 module.exports = router;

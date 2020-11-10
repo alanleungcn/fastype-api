@@ -1,13 +1,11 @@
 {
 	"name": "fastype",
 	"version": "1.0.0",
+	"license": "MIT",
 	"scripts": {
 		"start": "node index.js",
 		"dev": "nodemon index.js"
 	},
-	"keywords": [],
-	"author": "",
-	"license": "MIT",
 	"dependencies": {
 		"body-parser": "^1.19.0",
 		"connect-history-api-fallback": "^1.6.0",

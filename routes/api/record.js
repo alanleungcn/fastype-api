@@ -18,7 +18,7 @@ router.post('/record', validateRecord, async (req, res) => {
 });
 
 router.get('/record', async (req, res) => {
-	if (req.query.email || req.query.name) {
+	if (Object.keys(req.query).length > 0) {
 		const query = await user.find(
 			{ $or: [{ email: req.query.email }, { name: req.query.name }] },
 			['name', 'stat']

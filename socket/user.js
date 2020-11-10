@@ -10,28 +10,19 @@ function initUser(email, name, id) {
 	});
 }
 
-function joinPublic(id, roomId) {
-	const userIdx = users.findIndex((e) => e.id === id);
-	if (users[userIdx].room) return;
-	const roomIdx = rooms.findIndex((e) => e.id === roomId);
-	rooms[roomIdx].players.push({
-		email: users[userIdx].email,
-		name: users[userIdx].name
-	});
-	users[userIdx].room = roomId;
-	return rooms[roomIdx];
-}
-
-function userDisconnect(id) {
-	console.log(id);
-	const idx = users.findIndex((e) => e.id === id);
-	users.splice(idx, 1);
-}
-
 function userExist(email) {
 	const idx = users.findIndex((e) => e.email === email);
 	if (idx === -1) return false;
 	return true;
+}
+
+function userDisconnect(id) {
+	const userIdx = users.findIndex((e) => e.id === id);
+	const roomIdx = rooms.findIndex((e) => e.id === users[userIdx].room);
+	const playerIdx = rooms[roomIdx].players.findIndex((e) => e.id === id)
+	rooms[roomIdx].players.splice(playerIdx, 1);
+	users.splice(userIdx, 1);
+	console.log(users, rooms)
 }
 
 function availPublic() {
@@ -50,7 +41,7 @@ function availPublic() {
 }
 
 function createRoom(roomId) {
-	let text = [];
+	const text = [];
 	const word = quote[Math.floor(Math.random() * quote.length)].split(' ');
 	word.forEach((e) => text.push(e));
 	rooms.push({
@@ -58,6 +49,15 @@ function createRoom(roomId) {
 		text: text,
 		players: []
 	});
+}
+
+function joinPublic(id, roomId) {
+	const userIdx = users.findIndex((e) => e.id === id);
+	if (users[userIdx].room) return;
+	const roomIdx = rooms.findIndex((e) => e.id === roomId);
+	rooms[roomIdx].players.push(users[userIdx]);
+	users[userIdx].room = roomId;
+	return rooms[roomIdx];
 }
 
 module.exports = {

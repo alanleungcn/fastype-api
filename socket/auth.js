@@ -1,7 +1,7 @@
-const { OAuth2Client } = require('google-auth-library');
-const googleClient = new OAuth2Client(process.env.CLIENTID);
 const user = require('../model/user.js');
 const { initUser, userExist } = require('./user.js');
+const { OAuth2Client } = require('google-auth-library');
+const googleClient = new OAuth2Client(process.env.CLIENTID);
 
 module.exports = async (socket, next) => {
 	try {
@@ -11,8 +11,8 @@ module.exports = async (socket, next) => {
 		});
 		const payload = ticket.getPayload();
 		const email = payload.email;
-		const query = await user.find({ email: email }).select('name -_id');
 		if (userExist(email)) throw new Error();
+		const query = await user.find({ email: email }, ['name', '-_id']);
 		initUser(email, query[0].name, socket.id);
 		next();
 	} catch (err) {

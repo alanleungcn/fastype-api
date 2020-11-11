@@ -1,69 +1,65 @@
+const { customAlphabet } = require('nanoid');
+const nanoid = customAlphabet(
+	'0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz',
+	10
+);
 const quote = require('../assets/quote');
-const users = [];
-const rooms = [];
+const players = new Map();
+const rooms = new Map();
 
-function initUser(email, name, id) {
-	users.push({
-		email: email,
+function initPlayer(socketId, email, name) {
+	players.set(socketId, {
 		name: name,
-		id: id
+		email: email,
+		roomId: null
 	});
 }
 
-function userExist(email) {
-	const idx = users.findIndex((e) => e.email === email);
-	if (idx === -1) return false;
-	return true;
+function playerExist(email) {
+	for (const [k, v] of players) if (v.email === email) return true;
+	return false;
 }
 
-function userDisconnect(id) {
-	const userIdx = users.findIndex((e) => e.id === id);
-	const roomIdx = rooms.findIndex((e) => e.id === users[userIdx].room);
-	const playerIdx = rooms[roomIdx].players.findIndex((e) => e.id === id)
-	rooms[roomIdx].players.splice(playerIdx, 1);
-	users.splice(userIdx, 1);
-	console.log(users, rooms)
+function playerDisconnect(socketId) {
+	const roomId = players.get(socketId).roomId;
+	players.delete(socketId);
+	const room = rooms.get(roomId);
+	room.players.delete(socketId);
+	if (room.full) room.full = false;
+	console.log(players, rooms);
 }
 
-function availPublic() {
-	const freeRoom = rooms.find((e) => e.players.length < 5);
-	if (!freeRoom) {
-		const roomId =
-			Date.now() +
-			Math.round(Math.random() * 1000)
-				.toString()
-				.padStart(3, '0');
-		createRoom(roomId);
-		return roomId;
-	} else {
-		return freeRoom.id;
-	}
+function joinPublic(socketId, roomId) {
+	const player = players.get(socketId);
+	players.get(socketId).roomId = roomId;
+	console.log(roomId);
+	const room = rooms.get(roomId);
+	room.players.set(socketId, player);
+	if (room.players.size === 5) room.full = true;
+}
+
+function getPublic() {
+	if (rooms.size > 0) for (const [k, v] of rooms) if (!v.full) return k;
+	const roomId = nanoid();
+	createRoom(roomId);
+	return roomId;
 }
 
 function createRoom(roomId) {
 	const text = [];
 	const word = quote[Math.floor(Math.random() * quote.length)].split(' ');
 	word.forEach((e) => text.push(e));
-	rooms.push({
-		id: roomId,
+	rooms.set(roomId, {
 		text: text,
-		players: []
+		full: false,
+		players: new Map()
 	});
 }
 
-function joinPublic(id, roomId) {
-	const userIdx = users.findIndex((e) => e.id === id);
-	if (users[userIdx].room) return;
-	const roomIdx = rooms.findIndex((e) => e.id === roomId);
-	rooms[roomIdx].players.push(users[userIdx]);
-	users[userIdx].room = roomId;
-	return rooms[roomIdx];
-}
-
 module.exports = {
-	initUser,
-	userExist,
-	userDisconnect,
-	availPublic,
+	initPlayer,
+	playerExist,
+	playerDisconnect,
+	getPublic,
 	joinPublic
 };

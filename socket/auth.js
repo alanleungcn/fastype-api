@@ -1,5 +1,5 @@
 const user = require('../model/user.js');
-const { initUser, userExist } = require('./user.js');
+const { initPlayer, playerExist } = require('./user.js');
 const { OAuth2Client } = require('google-auth-library');
 const googleClient = new OAuth2Client(process.env.CLIENTID);
 
@@ -11,9 +11,9 @@ module.exports = async (socket, next) => {
 		});
 		const payload = ticket.getPayload();
 		const email = payload.email;
-		if (userExist(email)) throw new Error();
+		if (playerExist(email)) throw new Error();
 		const query = await user.find({ email: email }, ['name', '-_id']);
-		initUser(email, query[0].name, socket.id);
+		initPlayer(socket.id, email, query[0].name);
 		next();
 	} catch (err) {
 		next(new Error('authentication failed'));

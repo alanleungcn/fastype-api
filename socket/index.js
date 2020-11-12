@@ -8,7 +8,6 @@ module.exports = (io) => {
 			const roomId = getPublic();
 			joinPublic(socket.id, roomId);
 			socket.join(roomId);
-			io.in(roomId).emit('test');
 		});
 		socket.on('disconnect', () => {
 			playerDisconnect(socket.id);

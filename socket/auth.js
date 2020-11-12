@@ -1,6 +1,6 @@
 const user = require('../model/user.js');
-const { initPlayer, playerExist } = require('./user.js');
 const { OAuth2Client } = require('google-auth-library');
+const { initPlayer, playerExist } = require('./handler.js');
 const googleClient = new OAuth2Client(process.env.CLIENTID);
 
 module.exports = async (socket, next) => {

@@ -23,6 +23,7 @@ function playerExist(email) {
 function playerDisconnect(socketId) {
 	const roomId = players.get(socketId).roomId;
 	players.delete(socketId);
+	if (!roomId) return;
 	const room = rooms.get(roomId);
 	room.players.delete(socketId);
 	if (room.full) room.full = false;

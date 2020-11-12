@@ -20,7 +20,17 @@ router.post('/signin', async (req, res) => {
 			});
 			await account.save();
 		}
-		res.sendStatus(200);
+		const profile = await user.find({ email: email }, [
+			'config',
+			'email',
+			'name',
+			'-_id'
+		]);
+		res.json({
+			name: profile[0].name,
+			email: profile[0].email,
+			config: profile[0].config
+		});
 	} catch (err) {
 		res.sendStatus(401);
 	}

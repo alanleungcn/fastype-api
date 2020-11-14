@@ -7,11 +7,13 @@ const quote = require('../assets/quote');
 const players = new Map();
 const rooms = new Map();
 
-function initPlayer(socketId, email, name) {
+function initPlayer(socketId, name, email) {
 	players.set(socketId, {
 		name: name,
 		email: email,
-		roomId: null
+		roomId: null,
+		wpm: 0,
+		progress: 0
 	});
 }
 
@@ -28,6 +30,7 @@ function playerDisconnect(socketId) {
 	room.players.delete(socketId);
 	if (room.full) room.full = false;
 	console.log(players, rooms);
+	return { roomId: roomId, players: Array.from(room.players, ([k, v]) => v) };
 }
 
 function joinPublic(socketId, roomId) {
@@ -37,6 +40,7 @@ function joinPublic(socketId, roomId) {
 	const room = rooms.get(roomId);
 	room.players.set(socketId, player);
 	if (room.players.size === 5) room.full = true;
+	return Array.from(room.players, ([k, v]) => v);
 }
 
 function getPublic() {

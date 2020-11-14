@@ -1,4 +1,4 @@
-const { getPublic, joinPublic, playerDisconnect } = require('./handler');
+const { getPublic, joinPublic, playerDisconnect } = require('./game');
 const auth = require('./auth');
 
 module.exports = (io) => {
@@ -6,11 +6,15 @@ module.exports = (io) => {
 	io.on('connection', (socket) => {
 		socket.on('joinPublic', () => {
 			const roomId = getPublic();
-			joinPublic(socket.id, roomId);
+			const players = joinPublic(socket.id, roomId);
 			socket.join(roomId);
+			io.in(roomId).emit('playerUpdate', players);
+			socket.emit('joinRoom');
 		});
 		socket.on('disconnect', () => {
-			playerDisconnect(socket.id);
+			const room = playerDisconnect(socket.id);
+			if (!room) return
+			io.in(room.roomId).emit('playerUpdate', room.players);
 		});
 	});
 };

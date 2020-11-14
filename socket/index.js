@@ -6,14 +6,16 @@ module.exports = (io) => {
 	io.on('connection', (socket) => {
 		socket.on('joinPublic', () => {
 			const roomId = getPublic();
-			const players = joinPublic(socket.id, roomId);
+			const roomInfo = joinPublic(socket.id, roomId);
 			socket.join(roomId);
-			io.in(roomId).emit('playerUpdate', players);
-			socket.emit('joinRoom');
+			io.in(roomId).emit('playerUpdate', roomInfo.players);
+			socket.emit('joinRoom', roomInfo.text);
+			if (roomInfo.countdown)
+				io.in(roomId).emit('countdown', Date.now() + 10 * 1000);
 		});
 		socket.on('disconnect', () => {
 			const room = playerDisconnect(socket.id);
-			if (!room) return
+			if (!room) return;
 			io.in(room.roomId).emit('playerUpdate', room.players);
 		});
 	});

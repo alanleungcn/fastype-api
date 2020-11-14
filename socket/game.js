@@ -39,8 +39,12 @@ function joinPublic(socketId, roomId) {
 	console.log(roomId);
 	const room = rooms.get(roomId);
 	room.players.set(socketId, player);
-	if (room.players.size === 5) room.full = true;
-	return Array.from(room.players, ([k, v]) => v);
+	if (room.players.size === 1) room.full = true;	//FIXME
+	return {
+		text: room.text,
+		players: Array.from(room.players, ([k, v]) => v),
+		countdown: room.full ? true : false
+	};
 }
 
 function getPublic() {

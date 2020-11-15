@@ -33,13 +33,39 @@ function playerDisconnect(socketId) {
 	return { roomId: roomId, players: Array.from(room.players, ([k, v]) => v) };
 }
 
+function gameUpdate(socketId, data) {
+	const roomId = players.get(socketId).roomId;
+	if (!roomId) return;
+	const room = rooms.get(roomId);
+	const player = room.players.get(socketId);
+	player.wpm = data.wpm;
+	player.progress = data.progress;
+	return {
+		roomId: roomId,
+		players: Array.from(room.players, ([k, v]) => v)
+	};
+}
+
+function playerFinish(socketId) {
+	const roomId = players.get(socketId).roomId;
+	if (!roomId) return;
+	const room = rooms.get(roomId);
+	const player = room.players.get(socketId);
+	player.rank = room.rank;
+	room.rank++;
+	return {
+		roomId: roomId,
+		players: Array.from(room.players, ([k, v]) => v)
+	};
+}
+
 function joinPublic(socketId, roomId) {
 	const player = players.get(socketId);
 	players.get(socketId).roomId = roomId;
 	console.log(roomId);
 	const room = rooms.get(roomId);
 	room.players.set(socketId, player);
-	if (room.players.size === 1) room.full = true;	//FIXME
+	if (room.players.size === 1) room.full = true; //FIXME
 	return {
 		text: room.text,
 		players: Array.from(room.players, ([k, v]) => v),
@@ -61,6 +87,7 @@ function createRoom(roomId) {
 	rooms.set(roomId, {
 		text: text,
 		full: false,
+		rank: 1,
 		players: new Map()
 	});
 }
@@ -69,6 +96,8 @@ module.exports = {
 	initPlayer,
 	playerExist,
 	playerDisconnect,
+	playerFinish,
+	gameUpdate,
 	getPublic,
 	joinPublic
 };

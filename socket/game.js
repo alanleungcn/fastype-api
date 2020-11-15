@@ -38,6 +38,7 @@ function gameUpdate(socketId, data) {
 	const roomId = players.get(socketId).roomId;
 	if (!roomId) return;
 	const room = rooms.get(roomId);
+	if (!room) return
 	const player = room.players.get(socketId);
 	player.wpm = data.wpm;
 	player.progress = data.progress;

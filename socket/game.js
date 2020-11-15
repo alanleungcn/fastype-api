@@ -27,6 +27,7 @@ function playerDisconnect(socketId) {
 	players.delete(socketId);
 	if (!roomId) return;
 	const room = rooms.get(roomId);
+	if (!room) return
 	room.players.delete(socketId);
 	if (room.full) room.full = false;
 	console.log(players, rooms);
@@ -53,6 +54,9 @@ function playerFinish(socketId) {
 	const player = room.players.get(socketId);
 	player.rank = room.rank;
 	room.rank++;
+	if (room.rank > 2) {
+		rooms.delete(roomId);
+	}
 	return {
 		roomId: roomId,
 		players: Array.from(room.players, ([k, v]) => v)
@@ -65,7 +69,7 @@ function joinPublic(socketId, roomId) {
 	console.log(roomId);
 	const room = rooms.get(roomId);
 	room.players.set(socketId, player);
-	if (room.players.size === 1) room.full = true; //FIXME
+	if (room.players.size === 2) room.full = true; //FIXME
 	return {
 		text: room.text,
 		players: Array.from(room.players, ([k, v]) => v),

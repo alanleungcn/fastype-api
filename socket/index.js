@@ -1,4 +1,10 @@
-const { getPublic, joinPublic, playerDisconnect, gameUpdate, playerFinish } = require('./game');
+const {
+	getPublic,
+	joinPublic,
+	playerDisconnect,
+	gameUpdate,
+	playerFinish
+} = require('./game');
 const auth = require('./auth');
 
 module.exports = (io) => {
@@ -15,13 +21,13 @@ module.exports = (io) => {
 		});
 		socket.on('gameUpdate', (data) => {
 			const roomInfo = gameUpdate(socket.id, data);
-			if (!roomInfo) return
-			io.in(roomInfo.roomId).emit('playerUpdate', roomInfo.players)
-		})
+			if (!roomInfo) return;
+			io.in(roomInfo.roomId).emit('playerUpdate', roomInfo.players);
+		});
 		socket.on('playerFinish', () => {
 			const roomInfo = playerFinish(socket.id);
-			if (!roomInfo) return
-			io.in(roomInfo.roomId).emit('playerUpdate', roomInfo.players)
+			if (!roomInfo) return;
+			io.in(roomInfo.roomId).emit('playerUpdate', roomInfo.players);
 		});
 		socket.on('disconnect', () => {
 			const room = playerDisconnect(socket.id);

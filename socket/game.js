@@ -27,7 +27,7 @@ function playerDisconnect(socketId) {
 	players.delete(socketId);
 	if (!roomId) return;
 	const room = rooms.get(roomId);
-	if (!room) return
+	if (!room) return;
 	room.players.delete(socketId);
 	if (room.full) room.full = false;
 	console.log(players, rooms);
@@ -38,7 +38,7 @@ function gameUpdate(socketId, data) {
 	const roomId = players.get(socketId).roomId;
 	if (!roomId) return;
 	const room = rooms.get(roomId);
-	if (!room) return
+	if (!room) return;
 	const player = room.players.get(socketId);
 	player.wpm = data.wpm;
 	player.progress = data.progress;

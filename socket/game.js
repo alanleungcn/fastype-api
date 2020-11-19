@@ -55,7 +55,7 @@ function playerFinish(socketId) {
 	const player = room.players.get(socketId);
 	player.rank = room.rank;
 	room.rank++;
-	if (room.rank > 2) {
+	if (room.rank > room.players.size) {
 		rooms.delete(roomId);
 	}
 	return {
@@ -70,7 +70,7 @@ function joinPublic(socketId, roomId) {
 	console.log(roomId);
 	const room = rooms.get(roomId);
 	room.players.set(socketId, player);
-	if (room.players.size === 2) room.full = true; //FIXME
+	if (room.players.size === room.players.size) room.full = true; //FIXME
 	return {
 		text: room.text,
 		players: Array.from(room.players, ([k, v]) => v),

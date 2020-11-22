@@ -34,6 +34,15 @@ function playerDisconnect(socketId) {
 	return { roomId: roomId, players: Array.from(room.players, ([k, v]) => v) };
 }
 
+function leaveRoom(socketId) {
+	const roomId = players.get(socketId).roomId;
+	if (!roomId) return;
+	const room = rooms.get(roomId);
+	if (!room) return;
+	room.players.delete(socketId);
+	if (room.full) room.full = false;
+}
+
 function gameUpdate(socketId, data) {
 	const roomId = players.get(socketId).roomId;
 	if (!roomId) return;
@@ -67,10 +76,10 @@ function playerFinish(socketId) {
 function joinPublic(socketId, roomId) {
 	const player = players.get(socketId);
 	players.get(socketId).roomId = roomId;
-	console.log(roomId);
+	//console.log(roomId);
 	const room = rooms.get(roomId);
 	room.players.set(socketId, player);
-	if (room.players.size === room.players.size) room.full = true; //FIXME
+	if (room.players.size === 2) room.full = true; //FIXME
 	return {
 		text: room.text,
 		players: Array.from(room.players, ([k, v]) => v),
@@ -104,5 +113,6 @@ module.exports = {
 	playerFinish,
 	gameUpdate,
 	getPublic,
-	joinPublic
+	joinPublic,
+	leaveRoom
 };

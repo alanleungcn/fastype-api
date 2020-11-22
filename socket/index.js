@@ -3,7 +3,8 @@ const {
 	joinPublic,
 	playerDisconnect,
 	gameUpdate,
-	playerFinish
+	playerFinish,
+	leaveRoom
 } = require('./game');
 const auth = require('./auth');
 
@@ -18,6 +19,9 @@ module.exports = (io) => {
 			socket.emit('joinRoom', roomInfo.text);
 			if (roomInfo.countdown)
 				io.in(roomId).emit('countdown', Date.now() + 3 * 1000);
+		});
+		socket.on('leaveRoom', () => {
+			leaveRoom(socket.id);
 		});
 		socket.on('gameUpdate', (data) => {
 			const roomInfo = gameUpdate(socket.id, data);

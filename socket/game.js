@@ -12,8 +12,6 @@ function initPlayer(socketId, name, email) {
 		name: name,
 		email: email,
 		roomId: null,
-		wpm: 0,
-		progress: 0
 	});
 }
 
@@ -29,8 +27,8 @@ function playerDisconnect(socketId) {
 	const room = rooms.get(roomId);
 	if (!room) return;
 	room.players.delete(socketId);
-	if (room.full) room.full = false;
-	console.log(players, rooms);
+	//if (room.full) room.full = false;
+	//console.log(players, rooms);
 	return { roomId: roomId, players: Array.from(room.players, ([k, v]) => v) };
 }
 
@@ -40,7 +38,7 @@ function leaveRoom(socketId) {
 	const room = rooms.get(roomId);
 	if (!room) return;
 	room.players.delete(socketId);
-	if (room.full) room.full = false;
+	//if (room.full) room.full = false;
 }
 
 function gameUpdate(socketId, data) {
@@ -48,9 +46,10 @@ function gameUpdate(socketId, data) {
 	if (!roomId) return;
 	const room = rooms.get(roomId);
 	if (!room) return;
-	const player = room.players.get(socketId);
-	player.wpm = data.wpm;
-	player.progress = data.progress;
+	room.players.get(socketId).wpm = data.wpm;
+	room.players.get(socketId).progress = data.progress;
+	/* console.log(room, players)
+	console.log(room.players, players) */
 	return {
 		roomId: roomId,
 		players: Array.from(room.players, ([k, v]) => v)
@@ -67,6 +66,7 @@ function playerFinish(socketId) {
 	if (room.rank > room.players.size) {
 		rooms.delete(roomId);
 	}
+	//console.log(players)
 	return {
 		roomId: roomId,
 		players: Array.from(room.players, ([k, v]) => v)
@@ -76,10 +76,17 @@ function playerFinish(socketId) {
 function joinPublic(socketId, roomId) {
 	const player = players.get(socketId);
 	players.get(socketId).roomId = roomId;
-	//console.log(roomId);
 	const room = rooms.get(roomId);
-	room.players.set(socketId, player);
-	if (room.players.size === 2) room.full = true; //FIXME
+	const playerCopy = {
+		wpm: 0,
+		progress: 0,
+		name: player.name,
+		email: player.email,
+	}
+	room.players.set(socketId, playerCopy);
+	if (room.players.size === 1) room.full = true; //FIXME
+	//console.log(room.full);
+	//console.log(rooms, players)
 	return {
 		text: room.text,
 		players: Array.from(room.players, ([k, v]) => v),

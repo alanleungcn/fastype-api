@@ -84,7 +84,7 @@ function joinPublic(socketId, roomId) {
 		email: player.email,
 	}
 	room.players.set(socketId, playerCopy);
-	if (room.players.size === 1) room.full = true; //FIXME
+	if (room.players.size === 2) room.full = true; //FIXME
 	//console.log(room.full);
 	//console.log(rooms, players)
 	return {

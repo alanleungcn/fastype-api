@@ -11,7 +11,7 @@ function initPlayer(socketId, name, email) {
 	players.set(socketId, {
 		name: name,
 		email: email,
-		roomId: null,
+		roomId: null
 	});
 }
 
@@ -81,8 +81,8 @@ function joinPublic(socketId, roomId) {
 		wpm: 0,
 		progress: 0,
 		name: player.name,
-		email: player.email,
-	}
+		email: player.email
+	};
 	room.players.set(socketId, playerCopy);
 	if (room.players.size === 2) room.full = true; //FIXME
 	//console.log(room.full);

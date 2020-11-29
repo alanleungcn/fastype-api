@@ -21,7 +21,10 @@ module.exports = (io) => {
 				io.in(roomId).emit('countdown', Date.now() + 3 * 1000);
 		});
 		socket.on('leaveRoom', () => {
-			leaveRoom(socket.id);
+			const room = leaveRoom(socket.id);
+			if (!room) return;
+			socket.leave(room.roomId);
+			io.in(room.roomId).emit('playerUpdate', room.players)
 		});
 		socket.on('gameUpdate', (data) => {
 			const roomInfo = gameUpdate(socket.id, data);

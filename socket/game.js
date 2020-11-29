@@ -39,6 +39,7 @@ function leaveRoom(socketId) {
 	if (!room) return;
 	room.players.delete(socketId);
 	//if (room.full) room.full = false;
+	return { roomId: roomId, players: Array.from(room.players, ([k, v]) => v) };
 }
 
 function gameUpdate(socketId, data) {

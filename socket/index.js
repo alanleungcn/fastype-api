@@ -24,7 +24,7 @@ module.exports = (io) => {
 			const room = leaveRoom(socket.id);
 			if (!room) return;
 			socket.leave(room.roomId);
-			io.in(room.roomId).emit('playerUpdate', room.players)
+			io.in(room.roomId).emit('playerUpdate', room.players);
 		});
 		socket.on('gameUpdate', (data) => {
 			const roomInfo = gameUpdate(socket.id, data);

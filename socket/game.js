@@ -95,20 +95,30 @@ function joinPublic(socketId, roomId) {
 	};
 }
 
+function joinPrivate(socketId, roomId) {
+	//private room handling
+}
+
 function getPublic() {
 	if (rooms.size > 0) for (const [k, v] of rooms) if (!v.full) return k;
 	const roomId = nanoid();
-	createRoom(roomId);
+	createRoom(roomId, true);
 	return roomId;
 }
 
-function createRoom(roomId) {
+function getPrivate() {
+	if (rooms.size > 0)
+		for (const [k, v] of rooms) if (!v.full && v.private) return k;
+}
+
+function createRoom(roomId, private) {
 	const text = [];
 	const word = quote[Math.floor(Math.random() * quote.length)].split(' ');
 	word.forEach((e) => text.push(e));
 	rooms.set(roomId, {
 		text: text,
 		full: false,
+		private: private,
 		rank: 1,
 		players: new Map()
 	});
@@ -121,6 +131,7 @@ module.exports = {
 	playerFinish,
 	gameUpdate,
 	getPublic,
+	getPrivate,
 	joinPublic,
 	leaveRoom
 };

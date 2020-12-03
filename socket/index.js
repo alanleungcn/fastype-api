@@ -1,5 +1,6 @@
 const {
 	getPublic,
+	getPrivate,
 	joinPublic,
 	playerDisconnect,
 	gameUpdate,
@@ -19,6 +20,12 @@ module.exports = (io) => {
 			socket.emit('joinRoom', roomInfo.text);
 			if (roomInfo.countdown)
 				io.in(roomId).emit('countdown', Date.now() + 3 * 1000);
+		});
+		socket.on('joinPrivate', () => {
+			const roomId = getPrivate();
+			if (!roomId) return socket.emit('roomError');
+			socket.join(roomId);
+			//private room handling
 		});
 		socket.on('leaveRoom', () => {
 			const room = leaveRoom(socket.id);

@@ -96,19 +96,36 @@ function joinPublic(socketId, roomId) {
 }
 
 function joinPrivate(socketId, roomId) {
-	//private room handling
+	const player = players.get(socketId);
+	players.get(socketId).roomId = roomId;
+	const room = rooms.get(roomId);
+	const playerCopy = {
+		wpm: 0,
+		progress: 0,
+		name: player.name,
+		email: player.email
+	};
+	room.players.set(socketId, playerCopy);
+	return {
+		text: room.text,
+		players: Array.from(room.players, ([k, v]) => v),
+		roomId: roomId
+	};
 }
 
 function getPublic() {
 	if (rooms.size > 0) for (const [k, v] of rooms) if (!v.full) return k;
 	const roomId = nanoid();
-	createRoom(roomId, true);
+	createRoom(roomId, false);
 	return roomId;
 }
 
-function getPrivate() {
+function getPrivate(roomId) {
 	if (rooms.size > 0)
-		for (const [k, v] of rooms) if (!v.full && v.private) return k;
+		for (const [k, v] of rooms) {
+			console.log(k);
+			if (!v.full && v.private && k === roomId) return k;
+		}
 }
 
 function createRoom(roomId, private) {
@@ -124,6 +141,12 @@ function createRoom(roomId, private) {
 	});
 }
 
+function createPrivate() {
+	const roomId = nanoid();
+	createRoom(roomId, true);
+	return roomId;
+}
+
 module.exports = {
 	initPlayer,
 	playerExist,
@@ -133,5 +156,7 @@ module.exports = {
 	getPublic,
 	getPrivate,
 	joinPublic,
+	joinPrivate,
+	createPrivate,
 	leaveRoom
 };

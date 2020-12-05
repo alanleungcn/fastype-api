@@ -113,6 +113,16 @@ function joinPrivate(socketId, roomId) {
 	};
 }
 
+function votePrivate(socketId) {
+	const roomId = players.get(socketId).roomId;
+	const room = rooms.get(roomId);
+	room.vote++;
+	console.log(room);
+	if (room.vote === room.players.size)
+		return { roomId: roomId, countdown: true };
+	return { roomId: roomId, countdown: false };
+}
+
 function getPublic() {
 	if (rooms.size > 0) for (const [k, v] of rooms) if (!v.full) return k;
 	const roomId = nanoid();
@@ -137,7 +147,8 @@ function createRoom(roomId, private) {
 		full: false,
 		private: private,
 		rank: 1,
-		players: new Map()
+		players: new Map(),
+		vote: 0
 	});
 }
 
@@ -158,5 +169,6 @@ module.exports = {
 	joinPublic,
 	joinPrivate,
 	createPrivate,
+	votePrivate,
 	leaveRoom
 };

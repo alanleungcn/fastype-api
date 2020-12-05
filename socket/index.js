@@ -7,6 +7,7 @@ const {
 	playerFinish,
 	createPrivate,
 	joinPrivate,
+	votePrivate,
 	leaveRoom
 } = require('./game');
 const auth = require('./auth');
@@ -33,8 +34,6 @@ module.exports = (io) => {
 				text: roomInfo.text,
 				roomId: roomInfo.roomId
 			});
-			console.log(roomInfo);
-			//private room handling
 		});
 		socket.on('createRoom', () => {
 			const roomId = createPrivate();
@@ -46,7 +45,11 @@ module.exports = (io) => {
 				text: roomInfo.text,
 				roomId: roomInfo.roomId
 			});
-			console.log(roomInfo);
+		});
+		socket.on('vote', () => {
+			const roomInfo = votePrivate(socket.id);
+			if (roomInfo.countdown)
+				io.in(roomInfo.roomId).emit('countdown', Date.now() + 3 * 1000);
 		});
 		socket.on('leaveRoom', () => {
 			const room = leaveRoom(socket.id);

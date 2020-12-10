@@ -3,7 +3,7 @@ const word = require('../../assets/word.json');
 const quote = require('../../assets/quote.json');
 
 router.get('/text', (req, res) => {
-	if (!req.query.length) return res.sendStatus(400);
+	if (!req.query.length || req.query.length > 1000) return res.sendStatus(400);
 	const text = [];
 	if (req.query.length > 0) {
 		while (req.query.length--)

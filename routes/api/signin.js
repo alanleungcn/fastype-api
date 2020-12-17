@@ -16,7 +16,8 @@ router.post('/signin', async (req, res) => {
 		if (!exist) {
 			const account = new user({
 				name: name,
-				email: email
+				email: email,
+				emailPrefix: payload.email.split('@')[0]
 			});
 			await account.save();
 		}
@@ -26,6 +27,17 @@ router.post('/signin', async (req, res) => {
 			'name',
 			'-_id'
 		]);
+		if (profile[0].name !== payload.name) {
+			await user.updateOne(
+				{ email: payload.email },
+				{ $set: { name: payload.name } }
+			);
+			return res.json({
+				name: payload.name,
+				email: profile[0].email,
+				config: profile[0].config
+			});
+		}
 		res.json({
 			name: profile[0].name,
 			email: profile[0].email,

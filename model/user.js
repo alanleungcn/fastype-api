@@ -1,8 +1,9 @@
 const mongoose = require('mongoose');
 
 const userSchema = new mongoose.Schema({
-	email: String,
 	name: String,
+	email: String,
+	emailPrefix: String,
 	config: {
 		type: Object,
 		default: {
@@ -11,7 +12,7 @@ const userSchema = new mongoose.Schema({
 				name: 'custom',
 				bgColor: '#111111',
 				mainColor: '#dddddd',
-				subColor: '#444444'
+				subColor: '#777777'
 			}
 		}
 	},

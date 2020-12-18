@@ -38,6 +38,12 @@ router.post('/signin', async (req, res) => {
 				config: profile[0].config
 			});
 		}
+		if (!profile[0].emailPrefix) {
+			await user.updateOne(
+				{ email: payload.email },
+				{ $set: { emailPrefix: payload.email.split('@')[0] } }
+			);
+		}
 		res.json({
 			name: profile[0].name,
 			email: profile[0].email,

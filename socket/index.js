@@ -22,7 +22,7 @@ module.exports = (io) => {
 			io.in(roomId).emit('playerUpdate', roomInfo.players);
 			socket.emit('joinRoom', roomInfo.text);
 			if (roomInfo.countdown)
-				io.in(roomId).emit('countdown', Date.now() + 3 * 1000);
+				io.in(roomId).emit('countdown', Date.now() + 5 * 1000);
 		});
 		socket.on('joinPrivate', (data) => {
 			const roomId = getPrivate(data.roomId);
@@ -49,7 +49,7 @@ module.exports = (io) => {
 		socket.on('vote', () => {
 			const roomInfo = votePrivate(socket.id);
 			if (roomInfo.countdown)
-				io.in(roomInfo.roomId).emit('countdown', Date.now() + 3 * 1000);
+				io.in(roomInfo.roomId).emit('countdown', Date.now() + 5 * 1000);
 		});
 		socket.on('leaveRoom', () => {
 			const room = leaveRoom(socket.id);

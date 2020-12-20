@@ -1,5 +1,5 @@
-const router = require('express').Router();
 const Stat = require('../../class/stat');
+const router = require('express').Router();
 const user = require('../../model/user.js');
 const validateRecord = require('../../middleware/validator/record');
 

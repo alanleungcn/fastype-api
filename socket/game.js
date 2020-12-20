@@ -1,11 +1,11 @@
+const rooms = new Map();
+const players = new Map();
+const quote = require('../assets/quote');
 const { customAlphabet } = require('nanoid');
 const nanoid = customAlphabet(
 	'0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz',
 	10
 );
-const quote = require('../assets/quote');
-const players = new Map();
-const rooms = new Map();
 
 function initPlayer(socketId, name, email) {
 	players.set(socketId, {
@@ -27,8 +27,6 @@ function playerDisconnect(socketId) {
 	const room = rooms.get(roomId);
 	if (!room) return;
 	room.players.delete(socketId);
-	//if (room.full) room.full = false;
-	//console.log(players, rooms);
 	return { roomId: roomId, players: Array.from(room.players, ([k, v]) => v) };
 }
 
@@ -38,7 +36,7 @@ function leaveRoom(socketId) {
 	const room = rooms.get(roomId);
 	if (!room) return;
 	room.players.delete(socketId);
-	//if (room.full) room.full = false;
+	if (room.players.size === 0) rooms.delete(roomId);
 	return { roomId: roomId, players: Array.from(room.players, ([k, v]) => v) };
 }
 
@@ -49,8 +47,6 @@ function gameUpdate(socketId, data) {
 	if (!room) return;
 	room.players.get(socketId).wpm = data.wpm;
 	room.players.get(socketId).progress = data.progress;
-	/* console.log(room, players)
-	console.log(room.players, players) */
 	return {
 		roomId: roomId,
 		players: Array.from(room.players, ([k, v]) => v)
@@ -61,13 +57,11 @@ function playerFinish(socketId) {
 	const roomId = players.get(socketId).roomId;
 	if (!roomId) return;
 	const room = rooms.get(roomId);
+	if (!room) return;
 	const player = room.players.get(socketId);
 	player.rank = room.rank;
 	room.rank++;
-	if (room.rank > room.players.size) {
-		rooms.delete(roomId);
-	}
-	//console.log(players)
+	if (room.rank > room.players.size) rooms.delete(roomId);
 	return {
 		roomId: roomId,
 		players: Array.from(room.players, ([k, v]) => v)
@@ -85,9 +79,7 @@ function joinPublic(socketId, roomId) {
 		email: player.email
 	};
 	room.players.set(socketId, playerCopy);
-	if (room.players.size === 2) room.full = true; //FIXME
-	//console.log(room.full);
-	//console.log(rooms, players)
+	if (room.players.size === 3) room.full = true;
 	return {
 		text: room.text,
 		players: Array.from(room.players, ([k, v]) => v),
@@ -117,10 +109,9 @@ function votePrivate(socketId) {
 	const roomId = players.get(socketId).roomId;
 	const room = rooms.get(roomId);
 	room.vote++;
-	console.log(room);
 	if (room.vote === room.players.size)
-		return { roomId: roomId, countdown: true };
-	return { roomId: roomId, countdown: false };
+		return { roomId: roomId, countdown: true, vote: room.vote };
+	return { roomId: roomId, countdown: false, vote: room.vote };
 }
 
 function getPublic() {
@@ -132,10 +123,8 @@ function getPublic() {
 
 function getPrivate(roomId) {
 	if (rooms.size > 0)
-		for (const [k, v] of rooms) {
-			console.log(k);
+		for (const [k, v] of rooms)
 			if (!v.full && v.private && k === roomId) return k;
-		}
 }
 
 function createRoom(roomId, private) {
@@ -162,13 +151,13 @@ module.exports = {
 	initPlayer,
 	playerExist,
 	playerDisconnect,
-	playerFinish,
+	leaveRoom,
 	gameUpdate,
-	getPublic,
-	getPrivate,
+	playerFinish,
 	joinPublic,
 	joinPrivate,
-	createPrivate,
+	getPublic,
+	getPrivate,
 	votePrivate,
-	leaveRoom
+	createPrivate
 };

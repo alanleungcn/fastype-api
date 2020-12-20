@@ -16,6 +16,6 @@ module.exports = async (socket, next) => {
 		initPlayer(socket.id, query[0].name, email);
 		next();
 	} catch (err) {
-		next(new Error('authentication failed'));
+		next(new Error('Authentication failed'));
 	}
 };

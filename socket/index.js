@@ -1,14 +1,14 @@
 const {
-	getPublic,
-	getPrivate,
-	joinPublic,
 	playerDisconnect,
+	leaveRoom,
 	gameUpdate,
 	playerFinish,
-	createPrivate,
+	joinPublic,
 	joinPrivate,
+	getPublic,
+	getPrivate,
 	votePrivate,
-	leaveRoom
+	createPrivate
 } = require('./game');
 const auth = require('./auth');
 
@@ -48,14 +48,9 @@ module.exports = (io) => {
 		});
 		socket.on('vote', () => {
 			const roomInfo = votePrivate(socket.id);
+			io.in(roomInfo.roomId).emit('updateVote', roomInfo.vote);
 			if (roomInfo.countdown)
 				io.in(roomInfo.roomId).emit('countdown', Date.now() + 5 * 1000);
-		});
-		socket.on('leaveRoom', () => {
-			const room = leaveRoom(socket.id);
-			if (!room) return;
-			socket.leave(room.roomId);
-			io.in(room.roomId).emit('playerUpdate', room.players);
 		});
 		socket.on('gameUpdate', (data) => {
 			const roomInfo = gameUpdate(socket.id, data);
@@ -66,6 +61,12 @@ module.exports = (io) => {
 			const roomInfo = playerFinish(socket.id);
 			if (!roomInfo) return;
 			io.in(roomInfo.roomId).emit('playerUpdate', roomInfo.players);
+		});
+		socket.on('leaveRoom', () => {
+			const room = leaveRoom(socket.id);
+			if (!room) return;
+			socket.leave(room.roomId);
+			io.in(room.roomId).emit('playerUpdate', room.players);
 		});
 		socket.on('disconnect', () => {
 			const room = playerDisconnect(socket.id);

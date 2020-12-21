@@ -27,6 +27,7 @@ function playerDisconnect(socketId) {
 	const room = rooms.get(roomId);
 	if (!room) return;
 	room.players.delete(socketId);
+	if (room.players.size === 0) rooms.delete(roomId);
 	return { roomId: roomId, players: Array.from(room.players, ([k, v]) => v) };
 }
 
@@ -147,6 +148,10 @@ function createPrivate() {
 	return roomId;
 }
 
+function getPlayerSize() {
+	return players.size;
+}
+
 module.exports = {
 	initPlayer,
 	playerExist,
@@ -159,5 +164,6 @@ module.exports = {
 	getPublic,
 	getPrivate,
 	votePrivate,
-	createPrivate
+	createPrivate,
+	getPlayerSize
 };

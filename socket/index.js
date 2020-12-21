@@ -1,4 +1,5 @@
 const {
+	initPlayer,
 	playerDisconnect,
 	leaveRoom,
 	gameUpdate,
@@ -8,13 +9,20 @@ const {
 	getPublic,
 	getPrivate,
 	votePrivate,
-	createPrivate
+	createPrivate,
+	getPlayerSize
 } = require('./game');
 const auth = require('./auth');
 
 module.exports = (io) => {
 	io.use(auth);
 	io.on('connection', (socket) => {
+		initPlayer(
+			socket.id,
+			socket.handshake.query.name,
+			socket.handshake.query.email
+		);
+		io.emit('playerSize', getPlayerSize());
 		socket.on('joinPublic', () => {
 			const roomId = getPublic();
 			const roomInfo = joinPublic(socket.id, roomId);
@@ -70,6 +78,7 @@ module.exports = (io) => {
 		});
 		socket.on('disconnect', () => {
 			const room = playerDisconnect(socket.id);
+			io.emit('playerSize', getPlayerSize());
 			if (!room) return;
 			io.in(room.roomId).emit('playerUpdate', room.players);
 		});

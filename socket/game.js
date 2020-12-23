@@ -152,6 +152,11 @@ function getPlayerSize() {
 	return players.size;
 }
 
+function getPlayerInfo(socketId) {
+	console.log(players.get(socketId));
+	return players.get(socketId);
+}
+
 module.exports = {
 	initPlayer,
 	playerExist,
@@ -165,5 +170,6 @@ module.exports = {
 	getPrivate,
 	votePrivate,
 	createPrivate,
-	getPlayerSize
+	getPlayerSize,
+	getPlayerInfo
 };

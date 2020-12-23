@@ -10,7 +10,8 @@ const {
 	getPrivate,
 	votePrivate,
 	createPrivate,
-	getPlayerSize
+	getPlayerSize,
+	getPlayerInfo
 } = require('./game');
 const auth = require('./auth');
 
@@ -67,6 +68,17 @@ module.exports = (io) => {
 			const roomInfo = playerFinish(socket.id);
 			if (!roomInfo) return;
 			io.in(roomInfo.roomId).emit('playerUpdate', roomInfo.players);
+		});
+		socket.on('lobbyMsg', (msg) => {
+			const { name } = getPlayerInfo(socket.id);
+			msg.name = name;
+			io.emit('getLobbyMsg', msg);
+		});
+		socket.on('roomMsg', (msg) => {
+			const { name, roomId } = getPlayerInfo(socket.id);
+			if (!roomId) return;
+			msg.name = name;
+			io.in(roomId).emit('getRoomMsg', msg);
 		});
 		socket.on('leaveRoom', () => {
 			const room = leaveRoom(socket.id);

@@ -153,7 +153,6 @@ function getPlayerSize() {
 }
 
 function getPlayerInfo(socketId) {
-	console.log(players.get(socketId));
 	return players.get(socketId);
 }
 

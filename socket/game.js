@@ -116,7 +116,8 @@ function votePrivate(socketId) {
 }
 
 function getPublic() {
-	if (rooms.size > 0) for (const [k, v] of rooms) if (!v.full) return k;
+	if (rooms.size > 0)
+		for (const [k, v] of rooms) if (!v.full && !v.private) return k;
 	const roomId = nanoid();
 	createRoom(roomId, false);
 	return roomId;

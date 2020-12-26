@@ -110,8 +110,10 @@ function votePrivate(socketId) {
 	const roomId = players.get(socketId).roomId;
 	const room = rooms.get(roomId);
 	room.vote++;
-	if (room.vote === room.players.size)
+	if (room.vote === room.players.size) {
+		room.full = true;
 		return { roomId: roomId, countdown: true, vote: room.vote };
+	}
 	return { roomId: roomId, countdown: false, vote: room.vote };
 }
 
